@@ -1,0 +1,45 @@
+; ============================================================
+; Sample Configuration File for simple-backup.bat
+; ============================================================
+;
+; HOW TO USE:
+;   1. Uncomment a line by removing the leading semicolon (;).
+;   2. Replace the example value after the '=' with your own.
+;   3. Save this file in the same folder as simple-backup.bat.
+;
+; NOTE: All lines in this sample are commented out by default.
+;       The script will prompt you for any missing values at runtime.
+;
+; SPACES IN VALUES:
+;   You do NOT need to wrap values in quotes. Spaces are fine.
+;   Example: SOURCE=C:\Users\John Doe\Documents
+; ============================================================
+
+; --------------------------------------------------------------
+; SOURCE
+;   The folder on your local computer that you want to back up.
+;   You can use an absolute path or a relative path.
+; --------------------------------------------------------------
+;SOURCE=C:\Users\John\Documents\Important
+;SOURCE=C:\Users\John Doe\Documents
+
+; --------------------------------------------------------------
+; DESTINATION
+;   The network path (UNC) where backups will be stored.
+;   Example: \\NAS\Backups\MyFolder or \\192.168.1.50\backup
+; --------------------------------------------------------------
+;DESTINATION=\\192.168.1.50\backup\john_docs
+
+; --------------------------------------------------------------
+; USERNAME
+;   The username for authenticating to the network share.
+;   If omitted, the script will prompt you to enter it.
+; --------------------------------------------------------------
+;USERNAME=nas_user
+
+; --------------------------------------------------------------
+; LOG_DIR
+;   The folder where backup log files will be saved.
+;   If omitted, logs are written to the script's current directory.
+; --------------------------------------------------------------
+;LOG_DIR=C:\Users\John\BackupLogs
