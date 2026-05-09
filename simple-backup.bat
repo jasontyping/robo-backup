@@ -8,11 +8,23 @@ set "ARG_SOURCE="
 set "ARG_DESTINATION="
 set "ARG_USERNAME="
 set "ARG_LOG_DIR="
+set "SIMULATE="
+set "ARG_POS=0"
 
-if not "%~1"=="" set "ARG_SOURCE=1" & set "SOURCE=%~1"
-if not "%~2"=="" set "ARG_DESTINATION=1" & set "DESTINATION=%~2"
-if not "%~3"=="" set "ARG_USERNAME=1" & set "NAS_USER=%~3"
-if not "%~4"=="" set "ARG_LOG_DIR=1" & set "LOG_DIR=%~4"
+:ParseArgs
+if "%~1"=="" goto :ParseArgsDone
+if /i "%~1"=="/L" (
+    set "SIMULATE=1"
+) else (
+    set /a ARG_POS+=1
+    if !ARG_POS!==1 set "ARG_SOURCE=1" & set "SOURCE=%~1"
+    if !ARG_POS!==2 set "ARG_DESTINATION=1" & set "DESTINATION=%~1"
+    if !ARG_POS!==3 set "ARG_USERNAME=1" & set "NAS_USER=%~1"
+    if !ARG_POS!==4 set "ARG_LOG_DIR=1" & set "LOG_DIR=%~1"
+)
+shift
+goto :ParseArgs
+:ParseArgsDone
 
 if exist "%CONFIG_FILE%" (
     for /f "usebackq delims=" %%L in ("%CONFIG_FILE%") do (
@@ -62,7 +74,9 @@ if not "%NET_USE_RESULT%"=="0" (
     endlocal & exit /b %NET_USE_RESULT%
 )
 
-robocopy "%SOURCE%" "%DESTINATION%" /E /R:5 /W:10 /XO /NP /TEE /V /LOG+:"%LOG_FILE%"
+set "SIMULATE_FLAG="
+if defined SIMULATE set "SIMULATE_FLAG=/L"
+robocopy "%SOURCE%" "%DESTINATION%" /E /R:5 /W:10 /XO /NP /TEE /V /LOG+:"%LOG_FILE%" %SIMULATE_FLAG%
 set "ROBOCOPY_RESULT=%ERRORLEVEL%"
 
 net use "%DESTINATION%" /delete /y
@@ -75,7 +89,11 @@ if %ROBOCOPY_RESULT% geq 8 (
     echo ERROR: Backup completed with errors.
     endlocal & exit /b 1
 ) else (
-    echo Backup completed successfully.
+    if defined SIMULATE (
+        echo Simulation completed successfully.
+    ) else (
+        echo Backup completed successfully.
+    )
     endlocal & exit /b 0
 )
 
